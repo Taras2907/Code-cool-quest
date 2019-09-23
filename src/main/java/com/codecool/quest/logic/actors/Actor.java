@@ -6,6 +6,8 @@ import com.codecool.quest.logic.Drawable;
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health = 10;
+    private int damage;
+    private int armor;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -33,5 +35,20 @@ public abstract class Actor implements Drawable {
 
     public int getY() {
         return cell.getY();
+    }
+
+    public void receiveDamage(int enemyDamage) {
+        this.health -= enemyDamage/ armor;
+        if (this.health <= 0) {
+            this.death();
+        }
+    }
+
+    public int getDamage() {
+        return this.damage;
+    }
+
+    private void death() {
+        this.cell.setActor(null);
     }
 }
