@@ -17,15 +17,17 @@ public abstract class Actor implements Drawable {
 
     public void move(int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
-        if (isMovePossible(nextCell)) {
-            cell.setActor(null);
-            nextCell.setActor(this);
-            cell = nextCell;
-        }
+        cell.setActor(null);
+        nextCell.setActor(this);
+        cell = nextCell;
     }
 
     public boolean isMovePossible(Cell nextCell) {
         return nextCell.getType().equals(CellType.FLOOR) && (nextCell.getActor() == null);
+    }
+
+    public boolean isEnemyOnTheNextCell(Cell nextcell) {
+        return nextcell.getActor() != null;
     }
 
     public int getHealth() {
