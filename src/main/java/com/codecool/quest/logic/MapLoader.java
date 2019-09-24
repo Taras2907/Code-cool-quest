@@ -1,11 +1,9 @@
 package com.codecool.quest.logic;
 
-import com.codecool.quest.logic.actors.Bandit;
-import com.codecool.quest.logic.actors.Necromancer;
-import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
+import com.codecool.quest.logic.actors.*;
 import com.codecool.quest.logic.items.Armor;
 import com.codecool.quest.logic.items.Key;
+import com.codecool.quest.logic.items.Potion;
 import com.codecool.quest.logic.items.Weapon;
 
 import java.io.InputStream;
@@ -39,6 +37,10 @@ public class MapLoader {
                         case 's':
                             cell.setType(CellType.FLOOR);
                             new Skeleton(cell);
+                            break;
+                        case 'U':
+                            cell.setType(CellType.CHURCH5);
+                            new Ghost(cell);
                             break;
                         case 'B':
                             cell.setType(CellType.FLOOR);
@@ -143,8 +145,8 @@ public class MapLoader {
                             new Weapon(cell);
                             break;
                         case 'p':
-                            cell.setType(CellType.POTION);
-                           // new Potion(cell);
+                            cell.setType(CellType.FLOOR);
+                            new Potion(cell);
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);

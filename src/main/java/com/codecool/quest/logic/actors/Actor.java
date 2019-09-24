@@ -3,12 +3,14 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Drawable;
+import com.codecool.quest.logic.Obstacles;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health;
     private int damage;
     private int armor;
+
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -45,9 +47,16 @@ public abstract class Actor implements Drawable {
     }
 
     public boolean isMovePossible(Cell nextCell) {
-        return !nextCell.getType().equals(CellType.WALL) && (nextCell.getActor() == null);
+        return nextCellIsInObstacles(nextCell) && (nextCell.getActor() == null);
     }
-
+    private boolean nextCellIsInObstacles(Cell nextCell) {
+        for (Obstacles obstacle : Obstacles.values()) {
+            if (obstacle.toString().equals(nextCell.getType().toString())) {
+                return false;
+            }
+        }
+        return true;
+    }
     public boolean isEnemyOnTheNextCell(Cell nextcell) {
         return nextcell.getActor() != null;
     }

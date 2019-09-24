@@ -5,11 +5,6 @@ public enum CellType {
     EMPTY("empty"),
     FLOOR("floor"),
     WALL("wall"),
-    //items
-//    KEY("key"),
-//    ARMOR("armor"),
-//    WEAPON("weapon"),
-    POTION("potion"),
     //textures
     DOOR("door"),
     STEELDOOR("steelDoor"),
