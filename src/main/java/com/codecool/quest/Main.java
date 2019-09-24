@@ -4,6 +4,7 @@ import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
+import com.codecool.quest.logic.actors.Player;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -74,24 +75,40 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        Player player = map.getPlayer();
+        Cell playerCell = player.getCell();
+        Cell nextCell;
+        int dx = 0;
+        int dy = 0;
+
+
         switch (keyEvent.getCode()) {
             case UP:
-                map.getPlayer().move(0, -1);
-                refresh();
+                dx = 0;
+                dy = -1;
                 break;
             case DOWN:
-                map.getPlayer().move(0, 1);
-                refresh();
+                dx = 0;
+                dy = 1;
                 break;
             case LEFT:
-                map.getPlayer().move(-1, 0);
-                refresh();
+                dx = -1;
+                dy = 0;
                 break;
             case RIGHT:
-                map.getPlayer().move(1,0);
-                refresh();
+                dx = 1;
+                dy = 0;
                 break;
         }
+        nextCell = playerCell.getNeighbor(dx, dy);
+        System.out.println(nextCell.getTileName());
+
+        if (player.isMovePossible(nextCell)) {
+            player.move(dx, dy);
+        } else if (player.isEnemyOnTheNextCell(nextCell)) {
+
+        }
+        refresh();
     }
 
     private void refresh() {
