@@ -1,13 +1,17 @@
 package com.codecool.quest;
 
 import com.codecool.quest.logic.Cell;
+import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -22,6 +26,8 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Button pickUpButton = new Button("pick up item");
+    Scene scene;
 
     public static void main(String[] args) {
         launch(args);
@@ -30,11 +36,20 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane ui = new GridPane();
+
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
 
+        pickUpButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                onPickUpButtonPressed(event);
+            }
+        });
+
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+        ui.add(pickUpButton, 1, 2);
 
         BorderPane borderPane = new BorderPane();
 
@@ -42,12 +57,20 @@ public class Main extends Application {
         borderPane.setRight(ui);
 
         Scene scene = new Scene(borderPane);
+        this.scene = scene;
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
 
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
+        scene.getRoot().requestFocus();
+    }
+
+    private void onPickUpButtonPressed(ActionEvent actionEvent){
+        map.getPlayer().getCell().setType(CellType.FLOOR);
+
+        scene.getRoot().requestFocus();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
