@@ -78,6 +78,7 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        System.out.println(nextCell.getTileName());
 
         if (player.isMovePossible(nextCell)) {
             player.move(dx, dy);

@@ -23,7 +23,7 @@ public abstract class Actor implements Drawable {
     }
 
     public boolean isMovePossible(Cell nextCell) {
-        return nextCell.getType().equals(CellType.FLOOR) && (nextCell.getActor() == null);
+        return !nextCell.getType().equals(CellType.WALL) && (nextCell.getActor() == null);
     }
 
     public boolean isEnemyOnTheNextCell(Cell nextcell) {
