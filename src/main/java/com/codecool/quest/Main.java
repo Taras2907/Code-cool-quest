@@ -42,7 +42,6 @@ public class Main extends Application {
 
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
-
         pickUpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -71,7 +70,9 @@ public class Main extends Application {
     }
 
     private void onPickUpButtonPressed(ActionEvent actionEvent){
-        map.getPlayer().getCell().setType(CellType.FLOOR);
+        int playerX = map.getPlayer().getCell().getX();
+        int playerY = map.getPlayer().getCell().getY();
+        map.getCell(playerX, playerY).setItem(null);
 
         scene.getRoot().requestFocus();
     }
@@ -127,7 +128,9 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else {
+                }else if (cell.getItem() != null){
+                    Tiles.drawTile(context, cell.getItem(), x, y);
+                }else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
