@@ -23,7 +23,7 @@ public abstract class Actor implements Drawable {
     }
 
     public void checkDeath(){
-        if (health < 1){
+        if (health <= 0){
             cell.setActor(null);
         }
     }

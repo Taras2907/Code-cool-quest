@@ -87,7 +87,9 @@ public class Main extends Application {
         } else if (player.isEnemyOnTheNextCell(nextCell)) {
             enemy = nextCell.getActor();
             enemy.setHealth(enemy.getHealth() - player.getDamage());
+            player.setHealth(player.getHealth() - enemy.getDamage());
             enemy.checkDeath();
+            player.checkDeath();
             System.out.println("Enemy damage 5p");
         }
         refresh();
