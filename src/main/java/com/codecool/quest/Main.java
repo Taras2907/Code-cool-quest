@@ -22,6 +22,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label inventorylabel = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -35,6 +36,10 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+        ui.add(new Label("Inventory: "),0,3);
+        ui.add(inventorylabel, 0,4);
+
+
 
         BorderPane borderPane = new BorderPane();
 
