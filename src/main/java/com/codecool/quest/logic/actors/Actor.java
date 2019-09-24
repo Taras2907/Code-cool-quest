@@ -1,6 +1,7 @@
 package com.codecool.quest.logic.actors;
 
 import com.codecool.quest.logic.Cell;
+import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Drawable;
 
 public abstract class Actor implements Drawable {
@@ -21,6 +22,12 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
+    public void checkDeath(){
+        if (health < 1){
+            cell.setActor(null);
+        }
+    }
+
     public void setHealth(int health) {
         this.health = health;
     }
@@ -35,6 +42,14 @@ public abstract class Actor implements Drawable {
 
     public int getArmor() {
         return armor;
+    }
+
+    public boolean isMovePossible(Cell nextCell) {
+        return nextCell.getType().equals(CellType.FLOOR) && (nextCell.getActor() == null);
+    }
+
+    public boolean isEnemyOnTheNextCell(Cell nextcell) {
+        return nextcell.getActor() != null;
     }
 
     public int getHealth() {
