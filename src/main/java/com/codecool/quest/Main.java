@@ -7,6 +7,7 @@ import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 import com.codecool.quest.logic.actors.Skeleton;
+import com.codecool.quest.logic.items.Item;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -75,8 +76,10 @@ public class Main extends Application {
     private void onPickUpButtonPressed(ActionEvent actionEvent){
         int playerX = map.getPlayer().getCell().getX();
         int playerY = map.getPlayer().getCell().getY();
-        map.getCell(playerX, playerY).setItem(null);
 
+        Item item = map.getCell(playerX, playerY).getItem();
+        map.getPlayer().addItemToInventory(item);
+        map.getCell(playerX, playerY);
         scene.getRoot().requestFocus();
     }
     private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){

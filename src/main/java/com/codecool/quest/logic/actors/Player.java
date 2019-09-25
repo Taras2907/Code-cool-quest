@@ -12,7 +12,6 @@ import java.util.Arrays;
 public class Player extends Actor {
 
     ListView<Item> inventory = new ListView<>();
-    ObservableList<String> item = FXCollections.observableArrayList();
 
     public Player(Cell cell) {
         super(cell);
