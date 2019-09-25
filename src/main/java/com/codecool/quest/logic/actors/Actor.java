@@ -48,8 +48,8 @@ public abstract class Actor implements Drawable {
         return !nextCell.getType().equals(CellType.WALL) && (nextCell.getActor() == null);
     }
 
-    public boolean isEnemyOnTheNextCell(Cell nextcell) {
-        return nextcell.getActor() != null;
+    public boolean isEnemyOnTheNextCell(Cell nextCell) {
+        return nextCell.getActor() != null && !(nextCell.getActor() instanceof Player);
     }
 
     public int getHealth() {
