@@ -31,6 +31,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Button pickUpButton = new Button("pick up item");
     Scene scene;
+    Label inventorylabel = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -53,6 +54,10 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
         ui.add(pickUpButton, 1, 2);
+        ui.add(new Label("Inventory: "),0,6);
+        ui.add(inventorylabel, 0,4);
+
+
 
         BorderPane borderPane = new BorderPane();
 
