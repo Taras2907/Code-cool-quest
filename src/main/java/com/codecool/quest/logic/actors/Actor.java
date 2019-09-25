@@ -3,6 +3,10 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Drawable;
+import com.codecool.quest.logic.items.Item;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
@@ -55,6 +59,7 @@ public abstract class Actor implements Drawable {
     public int getHealth() {
         return health;
     }
+
 
     public Cell getCell() {
         return cell;
