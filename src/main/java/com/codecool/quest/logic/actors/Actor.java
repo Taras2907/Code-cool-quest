@@ -4,13 +4,16 @@ import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Drawable;
 import com.codecool.quest.logic.Obstacles;
+import com.codecool.quest.logic.items.Item;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health;
     private int damage;
     private int armor;
-
 
     public Actor(Cell cell) {
         this.cell = cell;
