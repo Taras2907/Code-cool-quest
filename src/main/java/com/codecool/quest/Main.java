@@ -7,6 +7,7 @@ import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 import com.codecool.quest.logic.actors.Skeleton;
+import com.codecool.quest.logic.items.Item;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,14 +17,18 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import javax.swing.border.Border;
+
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    private GameMap map = MapLoader.loadMap("/map1.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -40,17 +45,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane ui = new GridPane();
-
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
 
-        pickUpButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                onPickUpButtonPressed(event);
-            }
-        });
-
+        pickUpButton.setOnAction(this::onPickUpButtonPressed);
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
         ui.add(pickUpButton, 1, 2);
@@ -76,14 +74,26 @@ public class Main extends Application {
     }
 
     private void onPickUpButtonPressed(ActionEvent actionEvent){
-        map.getPlayer().getCell().setType(CellType.FLOOR);
+        int playerX = map.getPlayer().getCell().getX();
+        int playerY = map.getPlayer().getCell().getY();
 
+        Item item = map.getCell(playerX, playerY).getItem();
+        map.getPlayer().addItemToInventory(item);
+        map.getCell(playerX, playerY).setItem(null);
         scene.getRoot().requestFocus();
+    }
+    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){
+        if (playerCell.getItem() != null){
+            pickUpButton.setStyle("-fx-background-color: green");
+        }else {
+            pickUpButton.setStyle("-fx-background-color: red");
+        }
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
         Cell playerCell = player.getCell();
+
         Cell nextCell;
         Actor enemy;
         int dx = 0;
@@ -109,6 +119,7 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        changeButtonColorIfThereIsAnItemInCell(nextCell);
 
         if (player.isMovePossible(nextCell)) {
             player.move(dx, dy);
@@ -130,7 +141,9 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else {
+                }else if (cell.getItem() != null){
+                    Tiles.drawTile(context, cell.getItem(), x, y);
+                }else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }

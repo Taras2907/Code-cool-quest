@@ -3,6 +3,7 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Drawable;
+import com.codecool.quest.logic.Obstacles;
 import com.codecool.quest.logic.items.Item;
 
 import java.lang.reflect.Array;
@@ -49,11 +50,19 @@ public abstract class Actor implements Drawable {
     }
 
     public boolean isMovePossible(Cell nextCell) {
-        return !nextCell.getType().equals(CellType.WALL) && (nextCell.getActor() == null);
+        return nextCellIsInObstacles(nextCell) && (nextCell.getActor() == null);
     }
 
     public boolean isEnemyOnTheNextCell(Cell nextCell) {
         return nextCell.getActor() != null && !(nextCell.getActor() instanceof Player);
+    }
+    private boolean nextCellIsInObstacles(Cell nextCell) {
+        for (Obstacles obstacle : Obstacles.values()) {
+            if (obstacle.toString().equals(nextCell.getType().toString())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getHealth() {
