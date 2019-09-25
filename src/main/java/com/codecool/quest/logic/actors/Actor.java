@@ -4,12 +4,14 @@ import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.Drawable;
 import com.codecool.quest.logic.items.Item;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health = 10;
     private int damage;
     private int armor;
-    private Item[] inventory;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -26,10 +28,7 @@ public abstract class Actor implements Drawable {
     public int getHealth() {
         return health;
     }
-    public String [] getInventory() {
 
-        return inventory;
-    }
 
     public Cell getCell() {
         return cell;

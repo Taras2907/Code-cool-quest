@@ -36,7 +36,7 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Inventory: "),0,3);
+        ui.add(new Label("Inventory: "),0,6);
         ui.add(inventorylabel, 0,4);
 
 
