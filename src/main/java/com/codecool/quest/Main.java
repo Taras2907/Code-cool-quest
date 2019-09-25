@@ -104,7 +104,6 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
-        System.out.println(nextCell.getTileName());
 
         if (player.isMovePossible(nextCell)) {
             player.move(dx, dy);
@@ -114,7 +113,6 @@ public class Main extends Application {
             player.setHealth(player.getHealth() - enemy.getDamage());
             enemy.checkDeath();
             player.checkDeath();
-            System.out.println("Enemy damage 5p");
         }
         refresh();
     }
