@@ -6,7 +6,6 @@ import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -119,6 +118,8 @@ public class Main extends Application {
         nextCell = playerCell.getNeighbor(dx, dy);
         if (nextCell.getType().equals(CellType.EXIT)){
             changeMap("/map1.txt");
+        }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
+            changeMap("/end_game_win.txt");
         }
         changeButtonColorIfThereIsAnItemInCell(nextCell);
 
@@ -131,8 +132,7 @@ public class Main extends Application {
             enemy.checkDeath();
             player.checkDeath();
             if (!(playerCell.getActor() instanceof Player)){
-
-                this.map = MapLoader.loadMap("/end_game.txt");
+                changeMap("/end_game_lose.txt");
             }
         }
         refresh();

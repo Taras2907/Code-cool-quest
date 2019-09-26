@@ -39,6 +39,7 @@ public enum CellType {
     CROSS2("cross2"),
 
     EXIT("exit"),
+    EXIT_WIN("exit_win"),
 
     GRAVE1("grave1"),
     GRAVE2("grave2"),

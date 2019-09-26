@@ -136,6 +136,9 @@ public class MapLoader {
                         case 'e':
                             cell.setType(CellType.EXIT);
                             break;
+                        case 'X':
+                            cell.setType(CellType.EXIT_WIN);
+                            break;
                         case '+':
                             cell.setType(CellType.CROSS1);
                             break;
@@ -174,6 +177,15 @@ public class MapLoader {
                             break;
                         case 'O':
                             cell.setType(CellType.ELETTER);
+                            break;
+                        case 'W':
+                            cell.setType(CellType.WLETTER);
+                            break;
+                        case 'I':
+                            cell.setType(CellType.ILETTER);
+                            break;
+                        case 'V':
+                            cell.setType(CellType.NLETTER);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
