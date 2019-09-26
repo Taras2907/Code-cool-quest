@@ -2,18 +2,25 @@ package com.codecool.quest;
 
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.Directions;
+import com.codecool.quest.logic.CellType;
+import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
+import com.codecool.quest.logic.actors.Skeleton;
+import com.codecool.quest.logic.items.Item;
+import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,12 +32,18 @@ import javax.swing.*;
 import java.util.LinkedList;
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    private GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
+
     Label healthLabel = new Label();
+    Label inventorylabel = new Label();
+    Label attackLabel = new Label();
+    Label armorLabel = new Label();
+    Button pickUpButton = new Button("pick up item");
+    Scene scene;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,8 +55,19 @@ public class Main extends Application {
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
 
+        pickUpButton.setOnAction(this::onPickUpButtonPressed);
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+
+        ui.add(new Label("Attack: "), 0, 1);
+        ui.add(attackLabel, 1, 1);
+        ui.add(new Label("Armor: "), 0, 2);
+        ui.add(armorLabel, 1, 2);
+        ui.add(new Label("Inventory: "),0,3);
+        ui.add(inventorylabel, 0,3);
+        ui.add(pickUpButton, 0, 4);
+
+
 
         BorderPane borderPane = new BorderPane();
 
@@ -51,6 +75,7 @@ public class Main extends Application {
         borderPane.setRight(ui);
 
         Scene scene = new Scene(borderPane);
+        this.scene = scene;
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
@@ -62,7 +87,8 @@ public class Main extends Application {
         Task<Void> moveEnemies = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                while (true) {
+                Player player = map.getPlayer();
+                while (player.getHealth()>0) {
                     Thread.sleep(1000);
 
                     LinkedList<Actor> enemies = map.getEnemies();
@@ -95,19 +121,38 @@ public class Main extends Application {
 
                     refresh();
                 }
+            return null;
             }
         };
 
-
-
-
         new Thread(moveEnemies).start();
+        scene.getRoot().requestFocus();
+    }
+
+    private void onPickUpButtonPressed(ActionEvent actionEvent){
+        int playerX = map.getPlayer().getCell().getX();
+        int playerY = map.getPlayer().getCell().getY();
+        Item item = map.getCell(playerX, playerY).getItem();
+        map.getPlayer().addItemToInventory(item);
+        map.getCell(playerX, playerY).setItem(null);
+        scene.getRoot().requestFocus();
+    }
+    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){
+        if (playerCell.getItem() != null){
+            pickUpButton.setStyle("-fx-background-color: green");
+        }else {
+            pickUpButton.setStyle("-fx-background-color: red");
+        }
+    }
+    private void changeMap(String filePath){
+        this.map = MapLoader.loadMap(filePath);
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
         Cell playerCell = player.getCell();
         Cell nextCell;
+        Actor enemy;
         int dx = 0;
         int dy = 0;
 
@@ -131,13 +176,41 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        tryToOpenTheDoorIfThereIsAny(nextCell, player);
+        if (nextCell.getType().equals(CellType.EXIT)){
+
+            changeMap("/map1.txt");
+        }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
+            changeMap("/end_game_win.txt");
+        }
+        changeButtonColorIfThereIsAnItemInCell(nextCell);
 
         if (player.isMovePossible(nextCell)) {
             player.move(dx, dy);
         } else if (player.isEnemyOnTheNextCell(nextCell)) {
+            enemy = nextCell.getActor();
+            enemy.receiveDamage(player.getDamage(), player);
+            if (enemy.getHealth() < 0) {
+                enemy.death();
+                map.removeEnemyFromList(enemy);
+            } else {
+                player.receiveDamage(enemy.getDamage(), enemy);
+                if (player.getHealth() <= 0) {
+                    refresh();
+                    changeMap("/end_game_lose.txt");
+                }
+            }
 
         }
         refresh();
+    }
+    private void tryToOpenTheDoorIfThereIsAny(Cell cell, Player player){
+        if (cell.getDoor() != null){
+            if( player.playerHasKeyForDoor(cell.getDoor())){
+                System.out.println(cell.getDoor());
+                cell.setType(CellType.FLOOR);
+            }
+        }
     }
 
     private void refresh() {
@@ -148,11 +221,17 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else {
+                }else if (cell.getItem() != null){
+                    Tiles.drawTile(context, cell.getItem(), x, y);
+                }else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
+        if (map.getPlayer() != null){
+            healthLabel.setText("" + map.getPlayer().getHealth());
+            attackLabel.setText("" + map.getPlayer().getDamage());
+            armorLabel.setText("" + map.getPlayer().getArmor());
+        }
     }
 }

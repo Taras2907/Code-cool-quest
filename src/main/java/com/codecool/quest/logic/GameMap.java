@@ -51,4 +51,8 @@ public class GameMap {
     public LinkedList<Actor> getEnemies() {
         return enemies;
     }
+
+    public void removeEnemyFromList(Actor enemy) {
+        enemies.remove(enemy);
+    }
 }

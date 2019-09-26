@@ -1,14 +1,12 @@
 package com.codecool.quest.logic.actors;
 
 import com.codecool.quest.logic.Cell;
-import com.codecool.quest.logic.actors.Actor;
 
-public class Skeleton extends Actor {
-
-    public Skeleton(Cell cell) {
+public class Bandit extends Actor {
+    public Bandit(Cell cell) {
         super(cell);
-        int damage = 2;
-        int startingHealth = 10;
+        int damage = 4;
+        int startingHealth = 8;
         int armor = 1;
         this.setHealth(startingHealth);
         this.setDamage(damage);
@@ -17,8 +15,6 @@ public class Skeleton extends Actor {
 
     @Override
     public String getTileName() {
-        return "skeleton";
+        return "bandit";
     }
-
-
 }
