@@ -10,7 +10,7 @@ public class Armor extends Item {
 
     @Override
     public String getTileName() {
-        return "armor";
+        return "Bone Armor of the Skeleton King";
     }
 
     public int getDefence() {
