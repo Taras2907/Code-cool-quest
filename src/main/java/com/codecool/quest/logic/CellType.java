@@ -41,7 +41,34 @@ public enum CellType {
     EXIT("exit"),
 
     GRAVE1("grave1"),
-    GRAVE2("grave2");
+    GRAVE2("grave2"),
+
+    ALETTER("ALetter"),
+    BLETTER("BLetter"),
+    CLETTER("CLetter"),
+    DLETTER("DLetter"),
+    ELETTER("ELetter"),
+    FLETTER("FLetter"),
+    GLETTER("GLetter"),
+    HLETTER("HLetter"),
+    ILETTER("ILetter"),
+    JLETTER("JLetter"),
+    KLETTER("KLetter"),
+    LLETTER("LLetter"),
+    MLETTER("MLetter"),
+    NLETTER("NLetter"),
+    OLETTER("OLetter"),
+    PLETTER("PLetter"),
+    QLETTER("QLetter"),
+    RLETTER("RLetter"),
+    SLETTER("SLetter"),
+    TLETTER("ILetter"),
+    ULETTER("ULetter"),
+    VLETTER("VLetter"),
+    WLETTER("WLetter"),
+    XLETTER("XLetter"),
+    YLETTER("YLetter"),
+    ZLETTER("ZLetter");
 
     private final String tileName;
 

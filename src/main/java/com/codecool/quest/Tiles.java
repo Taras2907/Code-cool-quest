@@ -74,7 +74,32 @@ public class Tiles {
         //exit
         tileMap.put("exit", new Tile(23, 2));
 
-
+        tileMap.put("ALetter", new Tile(19, 30));
+        tileMap.put("BLetter", new Tile(20, 30));
+        tileMap.put("CLetter", new Tile(21, 30));
+        tileMap.put("DLetter", new Tile(22, 30));
+        tileMap.put("ELetter", new Tile(23, 30));
+        tileMap.put("FLetter", new Tile(24, 30));
+        tileMap.put("GLetter", new Tile(25, 30));
+        tileMap.put("hLetter", new Tile(26, 30));
+        tileMap.put("ILetter", new Tile(27, 30));
+        tileMap.put("JLetter", new Tile(28, 30));
+        tileMap.put("KLetter", new Tile(29, 30));
+        tileMap.put("LLetter", new Tile(30, 30));
+        tileMap.put("MLetter", new Tile(31, 30));
+        tileMap.put("NLetter", new Tile(19, 31));
+        tileMap.put("OLetter", new Tile(20, 31));
+        tileMap.put("PLetter", new Tile(21, 31));
+        tileMap.put("QLetter", new Tile(22, 31));
+        tileMap.put("RLetter", new Tile(23, 31));
+        tileMap.put("SLetter", new Tile(24, 31));
+        tileMap.put("TLetter", new Tile(25, 31));
+        tileMap.put("ULetter", new Tile(26, 31));
+        tileMap.put("VLetter", new Tile(27, 31));
+        tileMap.put("WLetter", new Tile(28, 31));
+        tileMap.put("XLetter", new Tile(29, 31));
+        tileMap.put("YLetter", new Tile(30, 31));
+        tileMap.put("ZLetter", new Tile(31, 31));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

@@ -76,7 +76,6 @@ public class Main extends Application {
     private void onPickUpButtonPressed(ActionEvent actionEvent){
         int playerX = map.getPlayer().getCell().getX();
         int playerY = map.getPlayer().getCell().getY();
-
         Item item = map.getCell(playerX, playerY).getItem();
         map.getPlayer().addItemToInventory(item);
         map.getCell(playerX, playerY).setItem(null);
@@ -129,6 +128,10 @@ public class Main extends Application {
             player.setHealth(player.getHealth() - enemy.getDamage());
             enemy.checkDeath();
             player.checkDeath();
+            if (!(playerCell.getActor() instanceof Player)){
+
+                this.map = MapLoader.loadMap("/end_game.txt");
+            }
         }
         refresh();
     }
@@ -148,6 +151,8 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
+        if (map.getPlayer() != null){
+            healthLabel.setText("" + map.getPlayer().getHealth());
+        }
     }
 }
