@@ -37,7 +37,7 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            new Skeleton(cell);
+                            map.addEnemyToEnemiesList(new Skeleton(cell));
                             break;
                         case 'k':
                             cell.setType(CellType.KEY);

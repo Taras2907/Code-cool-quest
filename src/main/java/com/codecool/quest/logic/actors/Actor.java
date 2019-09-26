@@ -60,4 +60,5 @@ public abstract class Actor implements Drawable {
     private void death() {
         this.cell.setActor(null);
     }
+
 }

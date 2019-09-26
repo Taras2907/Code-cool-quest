@@ -1,10 +1,15 @@
 package com.codecool.quest;
 
 import com.codecool.quest.logic.Cell;
+import com.codecool.quest.logic.Directions;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
+import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,6 +20,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import javax.swing.*;
+import java.util.LinkedList;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -49,6 +57,51 @@ public class Main extends Application {
 
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
+
+
+        Task<Void> moveEnemies = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while (true) {
+                    Thread.sleep(1000);
+
+                    LinkedList<Actor> enemies = map.getEnemies();
+
+                    for (Actor enemy : enemies) {
+
+                        Thread thread = new Thread(() -> {
+                            Cell enemyCell = enemy.getCell();
+                            Cell nextCell;
+
+                            Directions direction = Directions.randomDirection();
+                            int dx = direction.getDx();
+                            int dy = direction.getDy();
+
+                            nextCell = enemyCell.getNeighbor(dx, dy);
+
+                            while (!enemy.isMovePossible(nextCell)) {
+                                direction = Directions.randomDirection();
+                                dx = direction.getDx();
+                                dy = direction.getDy();
+
+                                nextCell = enemyCell.getNeighbor(dx, dy);
+                            }
+
+                            enemy.move(dx, dy);
+
+                        });
+                        thread.start();
+                    }
+
+                    refresh();
+                }
+            }
+        };
+
+
+
+
+        new Thread(moveEnemies).start();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
@@ -78,7 +131,6 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
-        System.out.println(nextCell.getTileName());
 
         if (player.isMovePossible(nextCell)) {
             player.move(dx, dy);

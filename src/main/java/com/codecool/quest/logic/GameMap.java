@@ -1,11 +1,15 @@
 package com.codecool.quest.logic;
 
+import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
+
+import java.util.LinkedList;
 
 public class GameMap {
     private int width;
     private int height;
     private Cell[][] cells;
+    private LinkedList<Actor> enemies = new LinkedList<Actor>();
 
     private Player player;
 
@@ -38,5 +42,13 @@ public class GameMap {
 
     public int getHeight() {
         return height;
+    }
+
+    public void addEnemyToEnemiesList(Actor enemy) {
+        enemies.add(enemy);
+    }
+
+    public LinkedList<Actor> getEnemies() {
+        return enemies;
     }
 }
