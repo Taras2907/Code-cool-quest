@@ -10,25 +10,21 @@ import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.border.Border;
 
 public class Main extends Application {
-    private GameMap map = MapLoader.loadMap("/map1.txt");
+    private GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -88,6 +84,9 @@ public class Main extends Application {
             pickUpButton.setStyle("-fx-background-color: red");
         }
     }
+    private void changeMap(String filePath){
+        this.map = MapLoader.loadMap(filePath);
+    }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
@@ -118,6 +117,9 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        if (nextCell.getType().equals(CellType.EXIT)){
+            changeMap("/map1.txt");
+        }
         changeButtonColorIfThereIsAnItemInCell(nextCell);
 
         if (player.isMovePossible(nextCell)) {
