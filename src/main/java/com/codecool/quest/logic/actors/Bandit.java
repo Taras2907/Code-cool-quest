@@ -7,7 +7,7 @@ public class Bandit extends Actor {
         super(cell);
         int damage = 4;
         int startingHealth = 8;
-        int armor = 0;
+        int armor = 1;
         this.setHealth(startingHealth);
         this.setDamage(damage);
         this.setArmor(armor);

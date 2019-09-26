@@ -27,12 +27,6 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    public void checkDeath(){
-        if (health <= 0){
-            cell.setActor(null);
-        }
-    }
-
     public void setHealth(int health) {
         this.health = health;
     }
@@ -82,10 +76,12 @@ public abstract class Actor implements Drawable {
         return cell.getY();
     }
 
-    public void receiveDamage(int enemyDamage) {
-        this.health -= enemyDamage/ armor;
-        if (this.health <= 0) {
-            this.death();
+    public void receiveDamage(int enemyDamage, Actor enemy) {
+        if(enemy.getCell().getActor() != null){
+            this.health -= enemyDamage/ armor;
+            if (this.health <= 0) {
+                this.death();
+            }
         }
     }
 

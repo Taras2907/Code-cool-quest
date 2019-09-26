@@ -7,6 +7,7 @@ import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
+import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
 import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
@@ -101,7 +102,6 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
         Cell playerCell = player.getCell();
-
         Cell nextCell;
         Actor enemy;
         int dx = 0;
@@ -140,10 +140,9 @@ public class Main extends Application {
             player.move(dx, dy);
         } else if (player.isEnemyOnTheNextCell(nextCell)) {
             enemy = nextCell.getActor();
-            enemy.setHealth(enemy.getHealth() - player.getDamage());
-            player.setHealth(player.getHealth() - enemy.getDamage());
-            enemy.checkDeath();
-            player.checkDeath();
+            enemy.receiveDamage(player.getDamage(), player);
+            player.receiveDamage(enemy.getDamage(), enemy);
+
             if (!(playerCell.getActor() instanceof Player)){
                 changeMap("/end_game_lose.txt");
             }

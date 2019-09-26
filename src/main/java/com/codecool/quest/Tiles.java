@@ -75,6 +75,7 @@ public class Tiles {
         tileMap.put("cross2", new Tile(25, 13));
         //exit
         tileMap.put("exit", new Tile(23, 2));
+        tileMap.put("exit_win" , new Tile(7, 17));
 
         tileMap.put("ALetter", new Tile(19, 30));
         tileMap.put("BLetter", new Tile(20, 30));
