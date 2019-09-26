@@ -1,5 +1,6 @@
 package com.codecool.quest.logic;
 
+import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.items.Item;
 
@@ -7,6 +8,7 @@ public class Cell implements Drawable {
     private CellType type;
     private Actor actor;
     private Item item;
+    private Door door;
     private GameMap gameMap;
     private int x, y;
 
@@ -31,12 +33,19 @@ public class Cell implements Drawable {
     public void setItem(Item item) {
         this.item = item;
     }
+    public void setDoor(Door door) {
+        this.door = door;
+    }
     public Item getItem() {
         return this.item;
     }
 
     public Actor getActor() {
         return actor;
+    }
+
+    public Door getDoor() {
+        return door;
     }
 
     public Cell getNeighbor(int dx, int dy) {

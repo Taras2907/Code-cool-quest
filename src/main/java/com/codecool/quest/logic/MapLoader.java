@@ -1,5 +1,6 @@
 package com.codecool.quest.logic;
 
+import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.actors.*;
 import com.codecool.quest.logic.items.Armor;
 import com.codecool.quest.logic.items.Key;
@@ -54,19 +55,27 @@ public class MapLoader {
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
-                            new Key(cell);
+                            new Key(cell, "blue");
+                            break;
+                        case 'г':
+                            cell.setType(CellType.FLOOR);
+                            new Key(cell, "golden");
+                            break;
+                        case 'й':
+                            cell.setType(CellType.FLOOR);
+                            new Key(cell, "red");
                             break;
                         case 'd':
                             cell.setType(CellType.DOOR);
+                            new Door(cell,"blue");
                             break;
                         case 'D':
                             cell.setType(CellType.STEELDOOR);
+                            new Door(cell,"red");
                             break;
                         case 'c':
                             cell.setType(CellType.CAGEDOOR);
-                            break;
-                        case 'o':
-                            cell.setType(CellType.OPENEDDOOR);
+                            new Door(cell,"golden");
                             break;
                         case 'a':
                             cell.setType(CellType.FLOOR);

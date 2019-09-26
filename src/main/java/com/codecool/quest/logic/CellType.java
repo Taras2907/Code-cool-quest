@@ -6,10 +6,9 @@ public enum CellType {
     FLOOR("floor"),
     WALL("wall"),
     //textures
-    DOOR("door"),
-    STEELDOOR("steelDoor"),
-    CAGEDOOR("cageDoor"),
-    OPENEDDOOR("openedDoor"),
+    DOOR("blueDoor"),
+    STEELDOOR("redDoor"),
+    CAGEDOOR("goldenDoor"),
 
     RIVER1("river1"),
     RIVER2("river2"),

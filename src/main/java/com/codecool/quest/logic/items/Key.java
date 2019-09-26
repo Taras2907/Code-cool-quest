@@ -3,12 +3,16 @@ package com.codecool.quest.logic.items;
 import com.codecool.quest.logic.Cell;
 
 public class Key extends Item {
-
-    public Key(Cell cell) {
+    private String color;
+    private Cell cell;
+    public Key(Cell cell, String color) {
         super(cell);
+        this.color = color;
     }
-
+    public String getColor(){
+        return this.color;
+    }
     public String getTileName() {
-        return "key";
+        return color + "Key";
     }
 }

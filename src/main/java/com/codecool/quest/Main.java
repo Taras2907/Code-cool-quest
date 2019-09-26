@@ -2,11 +2,13 @@ package com.codecool.quest;
 
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
+import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 import com.codecool.quest.logic.items.Item;
+import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -22,16 +24,20 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 
+
 public class Main extends Application {
     private GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
+
     Label healthLabel = new Label();
+    Label inventorylabel = new Label();
+    Label attackLabel = new Label();
+    Label armorLabel = new Label();
     Button pickUpButton = new Button("pick up item");
     Scene scene;
-    Label inventorylabel = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -46,9 +52,14 @@ public class Main extends Application {
         pickUpButton.setOnAction(this::onPickUpButtonPressed);
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(pickUpButton, 1, 2);
-        ui.add(new Label("Inventory: "),0,6);
-        ui.add(inventorylabel, 0,4);
+
+        ui.add(new Label("Attack: "), 0, 1);
+        ui.add(attackLabel, 1, 1);
+        ui.add(new Label("Armor: "), 0, 2);
+        ui.add(armorLabel, 1, 2);
+        ui.add(new Label("Inventory: "),0,3);
+        ui.add(inventorylabel, 0,3);
+        ui.add(pickUpButton, 0, 4);
 
 
 
@@ -116,7 +127,9 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        tryToOpenTheDoorIfThereIsAny(nextCell, player);
         if (nextCell.getType().equals(CellType.EXIT)){
+
             changeMap("/map1.txt");
         }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
             changeMap("/end_game_win.txt");
@@ -137,6 +150,14 @@ public class Main extends Application {
         }
         refresh();
     }
+    private void tryToOpenTheDoorIfThereIsAny(Cell cell, Player player){
+        if (cell.getDoor() != null){
+            if( player.playerHasKeyForDoor(cell.getDoor())){
+                System.out.println(cell.getDoor());
+                cell.setType(CellType.FLOOR);
+            }
+        }
+    }
 
     private void refresh() {
         context.setFill(Color.BLACK);
@@ -155,6 +176,8 @@ public class Main extends Application {
         }
         if (map.getPlayer() != null){
             healthLabel.setText("" + map.getPlayer().getHealth());
+            attackLabel.setText("" + map.getPlayer().getDamage());
+            armorLabel.setText("" + map.getPlayer().getArmor());
         }
     }
 }
