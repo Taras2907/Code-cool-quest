@@ -2,12 +2,14 @@ package com.codecool.quest;
 
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
+import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
+import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -21,6 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 
 
 public class Main extends Application {
@@ -118,7 +121,9 @@ public class Main extends Application {
                 break;
         }
         nextCell = playerCell.getNeighbor(dx, dy);
+        tryToOpenTheDoorIfThereIsAny(nextCell, player);
         if (nextCell.getType().equals(CellType.EXIT)){
+
             changeMap("/map1.txt");
         }
         changeButtonColorIfThereIsAnItemInCell(nextCell);
@@ -133,6 +138,14 @@ public class Main extends Application {
             player.checkDeath();
         }
         refresh();
+    }
+    private void tryToOpenTheDoorIfThereIsAny(Cell cell, Player player){
+        if (cell.getDoor() != null){
+            if( player.playerHasKeyForDoor(cell.getDoor())){
+                System.out.println(cell.getDoor());
+                cell.setType(CellType.FLOOR);
+            }
+        }
     }
 
     private void refresh() {

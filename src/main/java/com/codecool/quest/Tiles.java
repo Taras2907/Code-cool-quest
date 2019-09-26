@@ -34,14 +34,16 @@ public class Tiles {
         tileMap.put("bandit", new Tile(25, 1));
         tileMap.put("ghost", new Tile(26, 6));
         //items
-        tileMap.put("key", new Tile(17, 23));
+        tileMap.put("blueKey", new Tile(17, 23));
+        tileMap.put("goldenKey", new Tile(16, 23));
+        tileMap.put("redKey", new Tile(18, 23));
         tileMap.put("armor", new Tile(4, 23));
         tileMap.put("weapon", new Tile(4, 24));
         tileMap.put("potion", new Tile(26, 23));
         //textures
-        tileMap.put("door", new Tile(0, 10));
-        tileMap.put("steelDoor", new Tile(9, 11));
-        tileMap.put("cageDoor", new Tile(8, 11));
+        tileMap.put("blueDoor", new Tile(0, 10));
+        tileMap.put("goldenDoor", new Tile(9, 11));
+        tileMap.put("redDoor", new Tile(8, 11));
         //graves
         tileMap.put("grave1", new Tile(1, 14));
         tileMap.put("grave2", new Tile(0, 14));
