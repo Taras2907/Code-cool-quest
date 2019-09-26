@@ -13,6 +13,6 @@ public class Key extends Item {
         return this.color;
     }
     public String getTileName() {
-        return color + "Key";
+        return color + " Key";
     }
 }
