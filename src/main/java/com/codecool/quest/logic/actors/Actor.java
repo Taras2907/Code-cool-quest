@@ -94,3 +94,5 @@ public abstract class Actor implements Drawable {
     }
 
 }
+
+//TODO: zmienna predkosc

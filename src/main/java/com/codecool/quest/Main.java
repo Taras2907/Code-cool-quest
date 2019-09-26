@@ -89,7 +89,7 @@ public class Main extends Application {
             protected Void call() throws Exception {
                 Player player = map.getPlayer();
                 while (player.getHealth()>0) {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
 
                     LinkedList<Actor> enemies = map.getEnemies();
 
@@ -149,60 +149,62 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-        Player player = map.getPlayer();
-        Cell playerCell = player.getCell();
-        Cell nextCell;
-        Actor enemy;
-        int dx = 0;
-        int dy = 0;
+        if (map.getPlayer() != null) {
+            Player player = map.getPlayer();
+            Cell playerCell = player.getCell();
+            Cell nextCell;
+            Actor enemy;
+            int dx = 0;
+            int dy = 0;
 
 
-        switch (keyEvent.getCode()) {
-            case UP:
-                dx = 0;
-                dy = -1;
-                break;
-            case DOWN:
-                dx = 0;
-                dy = 1;
-                break;
-            case LEFT:
-                dx = -1;
-                dy = 0;
-                break;
-            case RIGHT:
-                dx = 1;
-                dy = 0;
-                break;
-        }
-        nextCell = playerCell.getNeighbor(dx, dy);
-        tryToOpenTheDoorIfThereIsAny(nextCell, player);
-        if (nextCell.getType().equals(CellType.EXIT)){
-
-            changeMap("/map1.txt");
-        }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-            changeMap("/end_game_win.txt");
-        }
-        changeButtonColorIfThereIsAnItemInCell(nextCell);
-
-        if (player.isMovePossible(nextCell)) {
-            player.move(dx, dy);
-        } else if (player.isEnemyOnTheNextCell(nextCell)) {
-            enemy = nextCell.getActor();
-            enemy.receiveDamage(player.getDamage(), player);
-            if (enemy.getHealth() < 0) {
-                enemy.death();
-                map.removeEnemyFromList(enemy);
-            } else {
-                player.receiveDamage(enemy.getDamage(), enemy);
-                if (player.getHealth() <= 0) {
-                    refresh();
-                    changeMap("/end_game_lose.txt");
-                }
+            switch (keyEvent.getCode()) {
+                case UP:
+                    dx = 0;
+                    dy = -1;
+                    break;
+                case DOWN:
+                    dx = 0;
+                    dy = 1;
+                    break;
+                case LEFT:
+                    dx = -1;
+                    dy = 0;
+                    break;
+                case RIGHT:
+                    dx = 1;
+                    dy = 0;
+                    break;
             }
+            nextCell = playerCell.getNeighbor(dx, dy);
+            tryToOpenTheDoorIfThereIsAny(nextCell, player);
+            if (nextCell.getType().equals(CellType.EXIT)){
 
+                changeMap("/map1.txt");
+            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
+                changeMap("/end_game_win.txt");
+            }
+            changeButtonColorIfThereIsAnItemInCell(nextCell);
+
+            if (player.isMovePossible(nextCell)) {
+                player.move(dx, dy);
+            } else if (player.isEnemyOnTheNextCell(nextCell)) {
+                enemy = nextCell.getActor();
+                enemy.receiveDamage(player.getDamage(), player);
+                if (enemy.getHealth() < 0) {
+                    enemy.death();
+                    map.removeEnemyFromList(enemy);
+                } else {
+                    player.receiveDamage(enemy.getDamage(), enemy);
+                    if (player.getHealth() <= 0) {
+                        refresh();
+                        changeMap("/end_game_lose.txt");
+                    }
+                }
+
+            }
+            refresh();
         }
-        refresh();
     }
     private void tryToOpenTheDoorIfThereIsAny(Cell cell, Player player){
         if (cell.getDoor() != null){

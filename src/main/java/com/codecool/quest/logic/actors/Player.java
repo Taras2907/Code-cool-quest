@@ -20,7 +20,7 @@ public class Player extends Actor {
     public Player(Cell cell) {
         super(cell);
         int damage = 5;
-        int startingHealth = 10;
+        int startingHealth = 20;
         int armor = 1;
         this.setHealth(startingHealth);
         this.setDamage(damage);
