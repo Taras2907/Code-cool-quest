@@ -9,6 +9,6 @@ public class Weapon extends Item {
 
     @Override
     public String getTileName() {
-        return "Scythe of the Dragon Priest";
+        return "Scythe of Priest";
     }
 }

@@ -13,14 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Player extends Actor {
-
-    //ListView<Item> inventory = new ListView<>();
+    ObservableList<String> items = FXCollections.observableArrayList ();
     ArrayList<Item> inventory = new ArrayList<>();
 
     public Player(Cell cell) {
         super(cell);
         int damage = 5;
-        int startingHealth = 20;
+        int startingHealth = 1000;
         int armor = 1;
         this.setHealth(startingHealth);
         this.setDamage(damage);
@@ -32,7 +31,7 @@ public class Player extends Actor {
     }
 
     public void addItemToInventory(Item item){
-
+        items.add(item.getTileName());
         inventory.add(item);
     }
     public boolean playerHasKeyForDoor(Door door){
@@ -40,10 +39,20 @@ public class Player extends Actor {
             if(item instanceof Key){
                 Key key = (Key) item;
                 if (key.getColor().equals(door.getColor())){
+                    items.remove(key.getTileName());
+                    inventory.remove(key);
                     return true;
                 }
             }
         }
         return  false;
+    }
+
+    public ObservableList<String> getItems() {
+        return items;
+    }
+
+    public void setItems(ObservableList<String> items) {
+        this.items = items;
     }
 }

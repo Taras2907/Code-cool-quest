@@ -37,8 +37,8 @@ public class Tiles {
         tileMap.put("blue Key", new Tile(17, 23));
         tileMap.put("golden Key", new Tile(16, 23));
         tileMap.put("red Key", new Tile(18, 23));
-        tileMap.put("Bone Armor of the Skeleton King", new Tile(4, 23));
-        tileMap.put("Scythe of the Dragon Priest", new Tile(4, 24));
+        tileMap.put("Bone Armor", new Tile(4, 23));
+        tileMap.put("Scythe of Priest", new Tile(4, 24));
         tileMap.put("Health Potion", new Tile(26, 23));
         //textures
         tileMap.put("blueDoor", new Tile(0, 10));

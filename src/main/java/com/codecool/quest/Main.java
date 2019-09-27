@@ -12,6 +12,7 @@ import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
 import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -22,6 +23,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -39,11 +41,13 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
 
     Label healthLabel = new Label();
-    Label inventorylabel = new Label();
     Label attackLabel = new Label();
     Label armorLabel = new Label();
     Button pickUpButton = new Button("pick up item");
     Scene scene;
+    Player player;
+    ObservableList<String> items;
+    ListView<String> lista = new ListView<String>();
 
     public static void main(String[] args) {
         launch(args);
@@ -56,16 +60,12 @@ public class Main extends Application {
         ui.setPadding(new Insets(10));
 
         pickUpButton.setOnAction(this::onPickUpButtonPressed);
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-
-        ui.add(new Label("Attack: "), 0, 1);
-        ui.add(attackLabel, 1, 1);
-        ui.add(new Label("Armor: "), 0, 2);
-        ui.add(armorLabel, 1, 2);
+        ui.add(healthLabel, 0, 0);
+        ui.add(attackLabel, 0, 1);
+        ui.add(armorLabel, 0, 2);
         ui.add(new Label("Inventory: "),0,3);
-        ui.add(inventorylabel, 0,3);
         ui.add(pickUpButton, 0, 4);
+        ui.add(lista, 0, 7);
 
 
 
@@ -129,23 +129,36 @@ public class Main extends Application {
         scene.getRoot().requestFocus();
     }
 
-    private void onPickUpButtonPressed(ActionEvent actionEvent){
+    private void onPickUpButtonPressed(ActionEvent actionEvent) {
         int playerX = map.getPlayer().getCell().getX();
         int playerY = map.getPlayer().getCell().getY();
         Item item = map.getCell(playerX, playerY).getItem();
-        map.getPlayer().addItemToInventory(item);
-        map.getCell(playerX, playerY).setItem(null);
+        if (item != null) {
+            map.getPlayer().addItemToInventory(item);
+            // adding new item to inventory
+            lista.setItems(map.getPlayer().getItems());
+
+            map.getCell(playerX, playerY).setItem(null);
+
+        }
         scene.getRoot().requestFocus();
     }
     private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){
         if (playerCell.getItem() != null){
-            pickUpButton.setStyle("-fx-background-color: green");
+            pickUpButton.setStyle("-fx-background-color: green;-fx-text-fill: white");
         }else {
-            pickUpButton.setStyle("-fx-background-color: red");
+            pickUpButton.setStyle("-fx-background-color: red;-fx-text-fill: white");
         }
     }
     private void changeMap(String filePath){
+        //copy current player to new map
+        this.player = map.getPlayer();
+        items = player.getItems();
+        int currentHealth = player.getHealth();
         this.map = MapLoader.loadMap(filePath);
+
+        this.map.getPlayer().setHealth(currentHealth);
+        this.map.getPlayer().setItems(items);
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
@@ -182,7 +195,7 @@ public class Main extends Application {
 
                 changeMap("/map1.txt");
             }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-                changeMap("/end_game_win.txt");
+                this.map = MapLoader.loadMap("/end_game_win.txt");
             }
             changeButtonColorIfThereIsAnItemInCell(nextCell);
 
@@ -209,7 +222,6 @@ public class Main extends Application {
     private void tryToOpenTheDoorIfThereIsAny(Cell cell, Player player){
         if (cell.getDoor() != null){
             if( player.playerHasKeyForDoor(cell.getDoor())){
-                System.out.println(cell.getDoor());
                 cell.setType(CellType.FLOOR);
             }
         }
@@ -231,9 +243,9 @@ public class Main extends Application {
             }
         }
         if (map.getPlayer() != null){
-            healthLabel.setText("" + map.getPlayer().getHealth());
-            attackLabel.setText("" + map.getPlayer().getDamage());
-            armorLabel.setText("" + map.getPlayer().getArmor());
+            healthLabel.setText("Health: " + map.getPlayer().getHealth());
+            attackLabel.setText("Attack: " + map.getPlayer().getDamage());
+            armorLabel.setText("Armor: " + map.getPlayer().getArmor());
         }
     }
 }
