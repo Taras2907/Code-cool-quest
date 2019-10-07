@@ -16,4 +16,6 @@ public class Armor extends Item {
     public int getDefence() {
         return defence;
     }
+
+//    public void equip(Player player) { player.increaseDefence(defence); }
 }

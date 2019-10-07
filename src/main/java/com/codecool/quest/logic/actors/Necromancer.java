@@ -2,7 +2,8 @@ package com.codecool.quest.logic.actors;
 
 import com.codecool.quest.logic.Cell;
 
-public class Necromancer extends Actor {
+public class Necromancer extends Actor implements Killable{
+    private static final int experienceForKilling = 1000;
     public Necromancer(Cell cell) {
         super(cell);
         int damage = 4;
@@ -16,5 +17,10 @@ public class Necromancer extends Actor {
     @Override
     public String getTileName() {
         return "necromancer";
+    }
+
+    @Override
+    public int getExperienceForKilling() {
+        return experienceForKilling;
     }
 }

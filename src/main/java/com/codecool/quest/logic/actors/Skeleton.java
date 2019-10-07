@@ -3,11 +3,11 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.actors.Actor;
 
-public class Skeleton extends Actor {
-
+public class Skeleton extends Actor implements Killable {
+    private static final int experienceForKilling = 400;
     public Skeleton(Cell cell) {
         super(cell);
-        int damage = 2;
+        int damage = 8;
         int startingHealth = 10;
         int armor = 1;
         this.setHealth(startingHealth);
@@ -21,4 +21,8 @@ public class Skeleton extends Actor {
     }
 
 
+    @Override
+    public int getExperienceForKilling() {
+        return experienceForKilling;
+    }
 }

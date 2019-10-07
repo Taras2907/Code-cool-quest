@@ -71,6 +71,7 @@ public enum CellType {
     ZLETTER("ZLetter");
 
     private final String tileName;
+//    private final boolean isObstacle;
 
     CellType(String tileName) {
         this.tileName = tileName;
