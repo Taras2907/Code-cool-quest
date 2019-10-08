@@ -62,7 +62,7 @@ public enum CellType {
     QLETTER("QLetter"),
     RLETTER("RLetter"),
     SLETTER("SLetter"),
-    TLETTER("ILetter"),
+    TLETTER("TLetter"),
     ULETTER("ULetter"),
     VLETTER("VLetter"),
     WLETTER("WLetter"),
