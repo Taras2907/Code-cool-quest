@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -112,5 +113,10 @@ public class Player extends Actor {
 
     public void setCurrentExperience(int currentExperience) {
         this.currentExperience = currentExperience;
+    }
+
+    public void makeAction(KeyEvent keyEvent){
+        String directionKey = keyEvent.getCode().toString();
+
     }
 }

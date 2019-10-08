@@ -189,7 +189,7 @@ public class Main extends Application {
             int dx = 0;
             int dy = 0;
 
-            String directionKey = keyEvent.getCode().toString();
+
 
             //Directions direction = Directions.valueOf(directionKey);
 
