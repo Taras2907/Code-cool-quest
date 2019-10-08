@@ -1,19 +1,11 @@
 package com.codecool.quest;
 
-import com.codecool.quest.logic.Cell;
-import com.codecool.quest.logic.Directions;
-import com.codecool.quest.logic.CellType;
-import com.codecool.quest.logic.Doors.Door;
-import com.codecool.quest.logic.GameMap;
-import com.codecool.quest.logic.MapLoader;
+import com.codecool.quest.logic.*;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Killable;
 import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
-import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -25,18 +17,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 
-public class Main extends Application {
+public class newMain extends Application {
+    private int RENDER_TIME = 25;
+    private boolean isGameRunning = true;
     private GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
@@ -92,57 +84,25 @@ public class Main extends Application {
         this.scene = scene;
         primaryStage.setScene(scene);
 
-        refresh();
+        new Thread(refreshScene).start();
         scene.setOnKeyPressed(this::onKeyPressed);
 
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
 
-
-        Task<Void> moveEnemies = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Player player = map.getPlayer();
-                while (player.getHealth()>0) {
-                    Thread.sleep(2000);
-
-                    LinkedList<Actor> enemies = map.getEnemies();
-
-                    for (Actor enemy : enemies) {
-
-                        Thread thread = new Thread(() -> {
-                            Cell enemyCell = enemy.getCell();
-                            Cell nextCell;
-
-                            Directions direction = Directions.randomDirection();
-                            int dx = direction.getDx();
-                            int dy = direction.getDy();
-
-                            nextCell = enemyCell.getNeighbor(dx, dy);
-
-                            while (!enemy.isMovePossible(nextCell)) {
-                                direction = Directions.randomDirection();
-                                dx = direction.getDx();
-                                dy = direction.getDy();
-
-                                nextCell = enemyCell.getNeighbor(dx, dy);
-                            }
-
-                            enemy.move(dx, dy);
-
-                        });
-                        thread.start();
-                    }
-
-                    refresh();
-                }
-                return null;
-            }
-        };
-
-        new Thread(moveEnemies).start();
         scene.getRoot().requestFocus();
     }
+
+    private Task<Void> refreshScene = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            while (isGameRunning) {
+                Thread.sleep(RENDER_TIME);
+                refresh();
+            }
+            return null;
+        }
+    };
 
     private void onPickUpButtonPressed(ActionEvent actionEvent) {
         int playerX = map.getPlayer().getCell().getX();
@@ -239,12 +199,10 @@ public class Main extends Application {
                 } else {
                     player.receiveDamage(enemy.getDamage());
                     if (player.getHealth() <= 0) {
-                        refresh();
                         this.map = MapLoader.loadMap(map.getGameOverMap());
                     }
                 }
             }
-            refresh();
         }
     }
 

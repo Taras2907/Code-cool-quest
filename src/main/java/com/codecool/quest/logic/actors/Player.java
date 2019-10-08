@@ -10,7 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 
-import java.awt.event.KeyEvent;
+//import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -116,7 +117,7 @@ public class Player extends Actor {
     }
 
     public void makeAction(KeyEvent keyEvent){
-        String directionKey = keyEvent.getCode().toString();
+        keyEvent.getCode().toString();
 
     }
 }
