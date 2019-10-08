@@ -16,8 +16,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -27,15 +25,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 
@@ -192,6 +189,11 @@ public class Main extends Application {
             int dx = 0;
             int dy = 0;
 
+            String directionKey = keyEvent.getCode().toString();
+
+            //Directions direction = Directions.valueOf(directionKey);
+
+            System.out.println(Directions.getValuesAsString().contains(directionKey));
 
             switch (keyEvent.getCode()) {
                 case UP:
@@ -210,13 +212,15 @@ public class Main extends Application {
                     dx = 1;
                     dy = 0;
                     break;
+                default:
+                    break;
             }
             nextCell = playerCell.getNeighbor(dx, dy);
             player.tryToOpenTheDoorIfThereIsAny(nextCell, player);
             if (nextCell.getType().equals(CellType.EXIT)){
-                changeMap("/map1.txt");
+                changeMap(map.getWinMap());
             }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-                this.map = MapLoader.loadMap("/end_game_win.txt");
+                map = MapLoader.loadMap(map.getNextMap());
             }
             changeButtonColorIfThereIsAnItemInCell(nextCell);
 
@@ -233,7 +237,7 @@ public class Main extends Application {
                     player.receiveDamage(enemy.getDamage());
                     if (player.getHealth() <= 0) {
                         refresh();
-                        this.map = MapLoader.loadMap("/end_game_lose.txt");
+                        this.map = MapLoader.loadMap(map.getGameOverMap());
                     }
                 }
             }
