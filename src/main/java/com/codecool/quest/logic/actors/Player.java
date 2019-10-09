@@ -3,20 +3,20 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Doors.Door;
-import com.codecool.quest.logic.actors.Actor;
+import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.items.Item;
 import com.codecool.quest.logic.items.Key;
+import com.codecool.quest.logic.items.Potion;
+import com.codecool.quest.logic.items.Weapon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
 
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Player extends Actor {
-    ObservableList<String> items = FXCollections.observableArrayList ();
-    ArrayList<Item> inventory = new ArrayList<>();
+    private ObservableList<String> items = FXCollections.observableArrayList ();
+    private Map<String, Item> inventory = new HashMap<>();
     private final int maxPlayerLevel = 5;
     private int currentLevel = 1;
     private int maxHealth = 40;
@@ -37,16 +37,23 @@ public class Player extends Actor {
     }
 
     public void addItemToInventory(Item item){
-        items.add(item.getTileName());
-        inventory.add(item);
+        int healthForTakingPotion = 10;
+        if (item instanceof Potion){
+            this.setHealth(this.getHealth() + healthForTakingPotion);
+        }else{
+            inventory.put(item.getTileName(), item);
+            items.add(item.getTileName());
+        }
+
     }
-    public boolean playerHasKeyForDoor(Door door){
-        for (Item item : inventory){
+    private boolean playerHasKeyForDoor(Door door){
+        for (Map.Entry<String, Item> entry: inventory.entrySet()){
+            Item item = entry.getValue();
             if(item instanceof Key){
                 Key key = (Key) item;
                 if (key.getColor().equals(door.getColor())){
                     items.remove(key.getTileName());
-                    inventory.remove(key);
+                    inventory.remove(entry.getKey(), item);
                     return true;
                 }
             }
@@ -62,7 +69,7 @@ public class Player extends Actor {
         this.items = items;
     }
     public double healthBar(){
-        return (double) this.getHealth() / 40;
+        return (double) this.getHealth() / maxHealth;
     }
     public double experienceBar(){
         return (double) currentExperience / experienceForNewLevel;
@@ -115,8 +122,9 @@ public class Player extends Actor {
         this.currentExperience = currentExperience;
     }
 
-    public void makeAction(KeyEvent keyEvent){
-        String directionKey = keyEvent.getCode().toString();
-
+    public String getItemDescriptionByItemName(String name){
+        return this.inventory.get(name).getDescription();
     }
+
+
 }

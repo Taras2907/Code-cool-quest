@@ -5,11 +5,16 @@ import com.codecool.quest.logic.Drawable;
 
 public abstract class Item implements Drawable {
     private Cell cell;
+    private String description;
+    private String tileName;
 
-    public Item(Cell cell) {
+    public Item(Cell cell,String tileName, String description) {
         this.cell = cell;
         this.cell.setItem(this);
+        this.description = description;
+        this.tileName = tileName;
     }
+
     public Cell getCell() {
         return cell;
     }
@@ -21,4 +26,9 @@ public abstract class Item implements Drawable {
     public int getY() {
         return cell.getY();
     }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
