@@ -91,6 +91,5 @@ public abstract class Actor implements Drawable {
         this.cell.setActor(null);
     }
 
-    public abstract void makeTurn();
 }
 

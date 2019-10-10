@@ -39,10 +39,7 @@ public class Player extends Actor {
         this.setArmor(armor);
     }
 
-    @Override
-    public void makeTurn() {
 
-    }
 
     public String getTileName() {
         return "player";

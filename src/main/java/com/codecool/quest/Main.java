@@ -102,7 +102,7 @@ public class Main extends Application {
         @Override
         protected Void call() throws Exception {
             while (isGameRunning) {
-                int TURN_DURATION = 1000;
+                int TURN_DURATION = 100;
                 Thread.sleep(TURN_DURATION);
                 map.makeEnemiesTurn();
             }

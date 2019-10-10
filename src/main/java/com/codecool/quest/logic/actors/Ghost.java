@@ -2,10 +2,10 @@ package com.codecool.quest.logic.actors;
 
 import com.codecool.quest.logic.Cell;
 
-public class Ghost extends Actor implements Killable{
+public class Ghost extends Enemy implements Killable{
     private static final int experienceForKilling = 500;
-    public Ghost(Cell cell) {
-        super(cell);
+    public Ghost(Cell cell, double movementPointsDecremental) {
+        super(cell, movementPointsDecremental);
         int damage = 20;
         int startingHealth = 16;
         int armor = 1;
@@ -14,10 +14,7 @@ public class Ghost extends Actor implements Killable{
         this.setArmor(armor);
     }
 
-    @Override
-    public void makeTurn() {
 
-    }
 
     @Override
     public int getExperienceForKilling() {

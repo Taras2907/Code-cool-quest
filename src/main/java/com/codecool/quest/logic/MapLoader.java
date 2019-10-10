@@ -55,19 +55,19 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            map.addEnemyToEnemiesList(new Skeleton(cell));
+                            map.addEnemyToEnemiesList(new Skeleton(cell, 1));
                             break;
                         case 'U':
                             cell.setType(CellType.CHURCH5);
-                            new Ghost(cell);
+                            map.addEnemyToEnemiesList(new Ghost(cell, 5));
                             break;
                         case 'B':
                             cell.setType(CellType.FLOOR);
-                            new Bandit(cell);
+                            map.addEnemyToEnemiesList(new Bandit(cell, 1.5));
                             break;
                         case 'n':
                             cell.setType(CellType.FLOOR);
-                            new Necromancer(cell);
+                            map.addEnemyToEnemiesList(new Necromancer(cell, 0));
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
