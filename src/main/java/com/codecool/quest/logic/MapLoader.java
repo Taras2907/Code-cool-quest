@@ -71,15 +71,15 @@ public class MapLoader {
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
-                            new Key(cell, "blue");
+                            new Key(cell, "blue Key", "Blue key was created to open blue doors and keep his owner in a good humor","blue");
                             break;
                         case 'г':
                             cell.setType(CellType.FLOOR);
-                            new Key(cell, "golden");
+                            new Key(cell, "golden Key", "Golden key obviously made from gold and it is very valuable because it opens the golden gates, do not try to sell it because you will became a target of a powerful curse","golden");
                             break;
                         case 'й':
                             cell.setType(CellType.FLOOR);
-                            new Key(cell, "red");
+                            new Key(cell, "red Key", "Red key made from copper and it is very easy to carry this kind of keys on your neck, some heroes are trying to show off, but it is not a golden key, you will not get ladies attention", "red");
                             break;
                         case 'd':
                             cell.setType(CellType.DOOR);
@@ -95,7 +95,7 @@ public class MapLoader {
                             break;
                         case 'a':
                             cell.setType(CellType.FLOOR);
-                            new Armor(cell);
+                            new Armor(cell, "Bone Armor", "Armor is not the best choice, bone armor is made from ribs, so it helps you only with stupid skeletons(they have no idea that may stab you between ribs and armor won't help you)");
                             break;
                         case 'b':
                             cell.setType(CellType.BRIDGE);
@@ -169,11 +169,11 @@ public class MapLoader {
                             break;
                         case 'w':
                             cell.setType(CellType.FLOOR);
-                            new Weapon(cell);
+                            new Weapon(cell, "Scythe of Priest", "Scythe of Priest not powerful and not magic but it is very long and not sharp so usually heroes scratching their backs and destroying skeletons ");
                             break;
                         case 'p':
                             cell.setType(CellType.FLOOR);
-                            new Potion(cell);
+                            new Potion(cell, "Health Potion", "Made by main Boss grandmother to help heroes defeat him. Restores 10 health. (Main boss didn't visit his grandma for a while. Remember to visit your grandma or give her a call from time to time, because she could start help your rivals!)");
                             break;
                         case 'E':
                             cell.setType(CellType.YLETTER);

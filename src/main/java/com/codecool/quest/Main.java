@@ -1,11 +1,19 @@
 package com.codecool.quest;
 
 import com.codecool.quest.logic.*;
+import com.codecool.quest.logic.Cell;
+import com.codecool.quest.logic.Directions;
+import com.codecool.quest.logic.CellType;
+import com.codecool.quest.logic.GameMap;
+import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Killable;
 import com.codecool.quest.logic.actors.Player;
+import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
+import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -17,7 +25,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -43,8 +53,10 @@ public class Main extends Application {
     Scene scene;
     Player player;
     ObservableList<String> items;
-    ListView<String> lista = new ListView<String >();
-//    ImageView imageView = new ImageView();
+    TextArea battleLog = new TextArea("Player received 10 damage");
+    TextArea itemDescription = new TextArea();
+    ListView<String> lista = new ListView<>();
+
 
 
     public static void main(String[] args) {
@@ -57,20 +69,33 @@ public class Main extends Application {
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
 
+        lista.setOnMouseClicked(this::fillTheItemDescription);
+
         pickUpButton.setOnAction(this::onPickUpButtonPressed);
-        ui.add(new Label("Health"), 0, 1);
+        ui.add(new Label("Ass Level 1"), 0, 1);
+        ui.add(new Label("Health"), 0, 2);
         health.setPrefWidth(160);
         health.setStyle("-fx-accent: red");
-        ui.add(health, 0, 2);
-        ui.add(new Label("Experience"), 0, 3);
+        ui.add(health, 0, 3);
+        ui.add(new Label("Experience"), 0, 4);
         experience.setPrefWidth(160);
         experience.setStyle("-fx-accent: gray");
-        ui.add(experience, 0, 4);
-        ui.add(attackLabel, 0, 5);
-        ui.add(armorLabel, 0, 6);
-        ui.add(new Label("Inventory: "), 0, 7);
-        ui.add(pickUpButton, 0, 8);
-        ui.add(lista, 0, 9);
+        ui.add(experience, 0, 5);
+        ui.add(attackLabel, 0, 6);
+        ui.add(armorLabel, 0, 7);
+        ui.add(new Label("Inventory: "), 0, 8);
+        ui.add(pickUpButton, 0, 9);
+        lista.setPrefHeight(160);
+        ui.add(lista, 0, 10);
+        ui.add(new Label("Item description"), 0, 11);
+        itemDescription.setStyle("-fx-text-overrun: elipsis");
+        itemDescription.setWrapText(true);
+        ui.add(itemDescription, 0, 12);
+        ui.add(new Label("Battle log:"), 0, 14);
+        battleLog.setPrefWidth(155);
+        ui.add(battleLog, 0, 15);
+
+
 
 
         BorderPane borderPane = new BorderPane();
@@ -81,9 +106,7 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         this.scene = scene;
         primaryStage.setScene(scene);
-
         refresh();
-
         scene.setOnKeyPressed(this::onKeyPressed);
 
         primaryStage.setTitle("Codecool Quest");
@@ -118,6 +141,14 @@ public class Main extends Application {
         }
     };
 
+    private void fillTheItemDescription(MouseEvent mouseEvent) {
+        String itemName = lista.getSelectionModel().getSelectedItem();
+        String itemDescription = map.getPlayer().getItemDescriptionByItemName(itemName);
+        this.itemDescription.setText(itemDescription);
+        scene.getRoot().requestFocus();
+    }
+
+
     private void onPickUpButtonPressed(ActionEvent actionEvent) {
         int playerX = map.getPlayer().getCell().getX();
         int playerY = map.getPlayer().getCell().getY();
@@ -125,7 +156,6 @@ public class Main extends Application {
         if (item != null) {
             map.getPlayer().addItemToInventory(item);
             lista.setItems(map.getPlayer().getItems());
-
             map.getCell(playerX, playerY).setItem(null);
 
         }

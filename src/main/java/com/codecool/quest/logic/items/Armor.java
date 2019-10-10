@@ -4,13 +4,15 @@ import com.codecool.quest.logic.Cell;
 
 public class Armor extends Item {
     private int defence = 2;
-    public Armor(Cell cell) {
-        super(cell);
+    private String tileName;
+    public Armor(Cell cell, String tileName, String description) {
+        super(cell, tileName, description);
+        this.tileName = tileName;
     }
 
     @Override
     public String getTileName() {
-        return "Bone Armor";
+        return tileName;
     }
 
     public int getDefence() {
