@@ -1,19 +1,16 @@
 package com.codecool.quest;
 
 import com.codecool.quest.logic.*;
+import com.codecool.quest.logic.*;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.Directions;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
-import com.codecool.quest.logic.actors.Killable;
 import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
-import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -26,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -34,12 +32,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class Main extends Application {
     private boolean isGameRunning = true;
 
-    public GameMap map = MapLoader.loadMap("/map.txt");
+    public GameMap map = MapLoader.loadMap("/start_game.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -52,6 +51,7 @@ public class Main extends Application {
     ProgressBar experience = new ProgressBar(0);
     Scene scene;
     Player player;
+    Stage primaryStage;
     ObservableList<String> items;
     TextArea battleLog = new TextArea("Player received 10 damage");
     TextArea itemDescription = new TextArea();
@@ -65,56 +65,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
+        String whichScene = " ";
+        this.primaryStage = primaryStage;
+        setScene(whichScene);
+        setPrimaryScene(this.primaryStage, whichScene);
+    }
 
-        lista.setOnMouseClicked(this::fillTheItemDescription);
-
-        pickUpButton.setOnAction(this::onPickUpButtonPressed);
-        ui.add(new Label("Ass Level 1"), 0, 1);
-        ui.add(new Label("Health"), 0, 2);
-        health.setPrefWidth(160);
-        health.setStyle("-fx-accent: red");
-        ui.add(health, 0, 3);
-        ui.add(new Label("Experience"), 0, 4);
-        experience.setPrefWidth(160);
-        experience.setStyle("-fx-accent: gray");
-        ui.add(experience, 0, 5);
-        ui.add(attackLabel, 0, 6);
-        ui.add(armorLabel, 0, 7);
-        ui.add(new Label("Inventory: "), 0, 8);
-        ui.add(pickUpButton, 0, 9);
-        lista.setPrefHeight(160);
-        ui.add(lista, 0, 10);
-        ui.add(new Label("Item description"), 0, 11);
-        itemDescription.setStyle("-fx-text-overrun: elipsis");
-        itemDescription.setWrapText(true);
-        ui.add(itemDescription, 0, 12);
-        ui.add(new Label("Battle log:"), 0, 14);
-        battleLog.setPrefWidth(155);
-        ui.add(battleLog, 0, 15);
-
-
-
-
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
-
-        Scene scene = new Scene(borderPane);
-        this.scene = scene;
+    private void setPrimaryScene(Stage primaryStage, String whichScene){
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
 
-        scene.getRoot().requestFocus();
-        new Thread(refreshScene).start();
-        new Thread(controlEnemies).start();
+        if (whichScene.equals("gameScene")) {
+            scene.setOnKeyPressed(this::onKeyPressed);
+            scene.getRoot().requestFocus();
+            new Thread(refreshScene).start();
+            new Thread(controlEnemies).start();
+        } else {
+            scene.setOnKeyPressed(this::onSpacePressed);}
     }
 
     private Task<Void> refreshScene = new Task<Void>() {
@@ -147,7 +116,58 @@ public class Main extends Application {
         this.itemDescription.setText(itemDescription);
         scene.getRoot().requestFocus();
     }
+        private void onSpacePressed(KeyEvent keyEvent){
+            scene.getRoot().requestFocus();
+            if (keyEvent.getCode() == KeyCode.SPACE) {
+                this.map = MapLoader.loadMap("/map.txt");
+                setScene("gameScene");
+                setPrimaryScene(this.primaryStage, "gameScene");
+                refresh();
+            }
+        }
 
+
+
+    private void setScene(String whichScene){
+        GridPane ui = new GridPane();
+        ui.setPrefWidth(200);
+        ui.setPadding(new Insets(10));
+
+            lista.setOnMouseClicked(this::fillTheItemDescription);
+
+            pickUpButton.setOnAction(this::onPickUpButtonPressed);
+            ui.add(new Label("Ass Level 1"), 0, 1);
+            ui.add(new Label("Health"), 0, 2);
+            health.setPrefWidth(160);
+            health.setStyle("-fx-accent: red");
+            ui.add(health, 0, 3);
+            ui.add(new Label("Experience"), 0, 4);
+            experience.setPrefWidth(160);
+            experience.setStyle("-fx-accent: gray");
+            ui.add(experience, 0, 5);
+            ui.add(attackLabel, 0, 6);
+            ui.add(armorLabel, 0, 7);
+            ui.add(new Label("Inventory: "), 0, 8);
+            ui.add(pickUpButton, 0, 9);
+            lista.setPrefHeight(160);
+            ui.add(lista, 0, 10);
+            ui.add(new Label("Item description"), 0, 11);
+            itemDescription.setStyle("-fx-text-overrun: elipsis");
+            itemDescription.setWrapText(true);
+            ui.add(itemDescription, 0, 12);
+            ui.add(new Label("Battle log:"), 0, 14);
+            battleLog.setPrefWidth(155);
+            ui.add(battleLog, 0, 15);
+
+        BorderPane borderPane = new BorderPane();
+
+        borderPane.setCenter(canvas);
+        if (whichScene.equals("gameScene")){
+            borderPane.setRight(ui);
+        }
+
+        this.scene = new Scene(borderPane);
+    }
 
     private void onPickUpButtonPressed(ActionEvent actionEvent) {
         int playerX = map.getPlayer().getCell().getX();
@@ -156,15 +176,17 @@ public class Main extends Application {
         if (item != null) {
             map.getPlayer().addItemToInventory(item);
             lista.setItems(map.getPlayer().getItems());
+
             map.getCell(playerX, playerY).setItem(null);
 
         }
         scene.getRoot().requestFocus();
     }
-    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){
-        if (playerCell.getItem() != null){
+
+    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell) {
+        if (playerCell.getItem() != null) {
             pickUpButton.setStyle("-fx-background-color: green;-fx-text-fill: white");
-        }else {
+        } else {
             pickUpButton.setStyle("-fx-background-color: red;-fx-text-fill: white");
         }
     }

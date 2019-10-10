@@ -205,6 +205,15 @@ public class MapLoader {
                         case 'V':
                             cell.setType(CellType.NLETTER);
                             break;
+                        case 'Z':
+                            cell.setType(CellType.RLETTER);
+                            break;
+                        case 'F':
+                            cell.setType(CellType.TLETTER);
+                            break;
+                        case 'H':
+                            cell.setType(CellType.MLETTER);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
