@@ -12,8 +12,15 @@ import java.util.Scanner;
 
 public class MapLoader {
 
-    public static GameMap loadMap(String filePath) {
+    public static GameMap loadMap(String filePath, Player player) {
+        return createMap(filePath, player);
+    }
 
+    public static GameMap loadMap(String filePath) {
+        return createMap(filePath, null);
+    }
+
+    private static GameMap createMap(String filePath, Player player) {
         InputStream is = MapLoader.class.getResourceAsStream(filePath);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
@@ -28,6 +35,15 @@ public class MapLoader {
                 if (x < line.length()) {
                     Cell cell = map.getCell(x, y);
                     switch (line.charAt(x)) {
+                        case '@':
+                            cell.setType(CellType.FLOOR);
+                            if (player == null) {
+                                map.setPlayer(new Player(cell));
+                            } else {
+                                player.setCell(cell);
+                                map.setPlayer(player);
+                            }
+                            break;
                         case ' ':
                             cell.setType(CellType.EMPTY);
                             break;
@@ -145,9 +161,6 @@ public class MapLoader {
                         case 'e':
                             cell.setType(CellType.EXIT);
                             break;
-                        case 'X':
-                            cell.setType(CellType.EXIT_WIN);
-                            break;
                         case '+':
                             cell.setType(CellType.CROSS1);
                             break;
@@ -161,10 +174,6 @@ public class MapLoader {
                         case 'p':
                             cell.setType(CellType.FLOOR);
                             new Potion(cell);
-                            break;
-                        case '@':
-                            cell.setType(CellType.FLOOR);
-                            map.setPlayer(new Player(cell));
                             break;
                         case 'E':
                             cell.setType(CellType.YLETTER);

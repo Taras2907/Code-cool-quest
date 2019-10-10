@@ -27,9 +27,9 @@ import java.util.LinkedList;
 
 
 public class newMain extends Application {
-    private int RENDER_TIME = 25;
     private boolean isGameRunning = true;
-    private GameMap map = MapLoader.loadMap("/map.txt");
+
+    public GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -73,8 +73,6 @@ public class newMain extends Application {
         ui.add(lista, 0, 9);
 
 
-
-
         BorderPane borderPane = new BorderPane();
 
         borderPane.setCenter(canvas);
@@ -84,21 +82,37 @@ public class newMain extends Application {
         this.scene = scene;
         primaryStage.setScene(scene);
 
-        new Thread(refreshScene).start();
+        refresh();
+
         scene.setOnKeyPressed(this::onKeyPressed);
 
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
 
         scene.getRoot().requestFocus();
+        new Thread(refreshScene).start();
+        new Thread(controlEnemies).start();
     }
 
     private Task<Void> refreshScene = new Task<Void>() {
         @Override
         protected Void call() throws Exception {
             while (isGameRunning) {
+                int RENDER_TIME = 100;
                 Thread.sleep(RENDER_TIME);
                 refresh();
+            }
+            return null;
+        }
+    };
+
+    private Task<Void> controlEnemies = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            while (isGameRunning) {
+                int TURN_DURATION = 1000;
+                Thread.sleep(TURN_DURATION);
+                map.makeEnemiesTurn();
             }
             return null;
         }
@@ -124,86 +138,15 @@ public class newMain extends Application {
             pickUpButton.setStyle("-fx-background-color: red;-fx-text-fill: white");
         }
     }
-    private void changeMap(String filePath){
-        //copy current player to new map
-        this.player = map.getPlayer();
-        items = player.getItems();
-        int experience = this.player.getCurrentExperience();
-        int level = this.player.getCurrentLevel();
-        int maxHealth = this.player.getMaxHealth();
-        int currentHealth = player.getHealth();
-        this.map = MapLoader.loadMap(filePath);
-        this.map.getPlayer().setCurrentExperience(experience);
-        this.map.getPlayer().setMaxHealth(maxHealth);
-        this.map.getPlayer().setCurrentLevel(level);
-        this.map.getPlayer().setHealth(currentHealth);
-        this.map.getPlayer().setItems(items);
+
+    public void setMap(GameMap map) {
+        this.map = map;
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         scene.getRoot().requestFocus();
-        if (map.getPlayer() != null) {
-            Player player = map.getPlayer();
-            Cell playerCell = player.getCell();
-            Cell nextCell;
-            Actor enemy;
-            int dx = 0;
-            int dy = 0;
-
-
-
-            //Directions direction = Directions.valueOf(directionKey);
-
-//            System.out.println(Directions.getValuesAsString().contains(directionKey));
-
-
-
-            switch (keyEvent.getCode()) {
-                case UP:
-                    dx = 0;
-                    dy = -1;
-                    break;
-                case DOWN:
-                    dx = 0;
-                    dy = 1;
-                    break;
-                case LEFT:
-                    dx = -1;
-                    dy = 0;
-                    break;
-                case RIGHT:
-                    dx = 1;
-                    dy = 0;
-                    break;
-                default:
-                    break;
-            }
-            nextCell = playerCell.getNeighbor(dx, dy);
-            player.tryToOpenTheDoorIfThereIsAny(nextCell, player);
-            if (nextCell.getType().equals(CellType.EXIT)){
-                changeMap(map.getWinMap());
-            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-                map = MapLoader.loadMap(map.getNextMap());
-            }
-            changeButtonColorIfThereIsAnItemInCell(nextCell);
-
-            if (player.isMovePossible(nextCell)) {
-                player.move(dx, dy);
-            } else if (player.isEnemyOnTheNextCell(nextCell)) {
-                enemy = nextCell.getActor();
-                enemy.receiveDamage(player.getDamage());
-                if (enemy.getHealth() < 0) {
-                    enemy.death();
-                    player.receiveExperience((Killable) enemy);
-                    map.removeEnemyFromList(enemy);
-                } else {
-                    player.receiveDamage(enemy.getDamage());
-                    if (player.getHealth() <= 0) {
-                        this.map = MapLoader.loadMap(map.getGameOverMap());
-                    }
-                }
-            }
-        }
+        Player player = map.getPlayer();
+        player.makeAction(keyEvent, this);
     }
 
     private void refresh() {

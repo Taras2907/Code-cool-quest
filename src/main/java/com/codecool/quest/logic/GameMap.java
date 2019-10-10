@@ -3,13 +3,11 @@ package com.codecool.quest.logic;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Player;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class GameMap {
     private static int currentLevelIndex = 0;
-    private String[] levels = new String[]{"/map.txt", "/map1.txt"};
+    private String[] levels = new String[]{"/map.txt", "/map1.txt", "/end_game_win.txt"};
     private int width;
     private int height;
     private Cell[][] cells;
@@ -59,13 +57,25 @@ public class GameMap {
     public void removeEnemyFromList(Actor enemy) {
         enemies.remove(enemy);
     }
+
     public String getNextMap(){
         currentLevelIndex++;
+        System.out.println(levels[currentLevelIndex]);
         return levels[currentLevelIndex];
     }
-    public String getWinMap(){
-        return "/end_game_win.txt";
+
+    public void makeEnemiesTurn() {
+        for (Actor enemy : enemies) {
+            enemy.makeTurn();
+        }
     }
+
+    public GameMap changeMap(Player player1){
+        //copy current player to new map
+        return MapLoader.loadMap(getNextMap(), player1);
+
+    }
+
     public String getGameOverMap(){
         return "/end_game_lose.txt";
     }

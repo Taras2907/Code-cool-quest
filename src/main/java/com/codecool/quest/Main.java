@@ -220,11 +220,11 @@ public class Main extends Application {
             }
             nextCell = playerCell.getNeighbor(dx, dy);
             player.tryToOpenTheDoorIfThereIsAny(nextCell, player);
-            if (nextCell.getType().equals(CellType.EXIT)){
-                changeMap(map.getWinMap());
-            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-                map = MapLoader.loadMap(map.getNextMap());
-            }
+//            if (nextCell.getType().equals(CellType.EXIT)){
+//                changeMap(map.getWinMap());
+//            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
+//                map = MapLoader.loadMap(map.getNextMap());
+//            }
             changeButtonColorIfThereIsAnItemInCell(nextCell);
 
             if (player.isMovePossible(nextCell)) {

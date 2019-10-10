@@ -63,6 +63,9 @@ public abstract class Actor implements Drawable {
         return health;
     }
 
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
 
     public Cell getCell() {
         return cell;
@@ -87,6 +90,7 @@ public abstract class Actor implements Drawable {
     public void death() {
         this.cell.setActor(null);
     }
+
+    public abstract void makeTurn();
 }
 
-//TODO: zmienna predkosc

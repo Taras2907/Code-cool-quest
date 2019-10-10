@@ -15,6 +15,11 @@ public class Bandit extends Actor implements Killable {
     }
 
     @Override
+    public void makeTurn() {
+
+    }
+
+    @Override
     public String getTileName() {
         return "bandit";
     }

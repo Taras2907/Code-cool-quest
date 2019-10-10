@@ -15,6 +15,11 @@ public class Ghost extends Actor implements Killable{
     }
 
     @Override
+    public void makeTurn() {
+
+    }
+
+    @Override
     public int getExperienceForKilling() {
         return experienceForKilling;
     }
