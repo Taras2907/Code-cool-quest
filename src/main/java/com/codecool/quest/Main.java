@@ -29,7 +29,7 @@ import java.util.LinkedList;
 
 
 public class Main extends Application {
-    private GameMap map = MapLoader.loadMap("/map.txt");
+    private GameMap map = MapLoader.loadMap("/map2.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
