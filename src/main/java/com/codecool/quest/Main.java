@@ -1,19 +1,11 @@
 package com.codecool.quest;
 
-import com.codecool.quest.logic.Cell;
-import com.codecool.quest.logic.Directions;
-import com.codecool.quest.logic.CellType;
-import com.codecool.quest.logic.Doors.Door;
-import com.codecool.quest.logic.GameMap;
-import com.codecool.quest.logic.MapLoader;
+import com.codecool.quest.logic.*;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Killable;
 import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
-import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -25,19 +17,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 
 public class Main extends Application {
-    private GameMap map = MapLoader.loadMap("/map.txt");
+    private boolean isGameRunning = true;
+
+    public GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -81,8 +73,6 @@ public class Main extends Application {
         ui.add(lista, 0, 9);
 
 
-
-
         BorderPane borderPane = new BorderPane();
 
         borderPane.setCenter(canvas);
@@ -93,56 +83,40 @@ public class Main extends Application {
         primaryStage.setScene(scene);
 
         refresh();
+
         scene.setOnKeyPressed(this::onKeyPressed);
 
         primaryStage.setTitle("Codecool Quest");
         primaryStage.show();
 
-
-        Task<Void> moveEnemies = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Player player = map.getPlayer();
-                while (player.getHealth()>0) {
-                    Thread.sleep(2000);
-
-                    LinkedList<Actor> enemies = map.getEnemies();
-
-                    for (Actor enemy : enemies) {
-
-                        Thread thread = new Thread(() -> {
-                            Cell enemyCell = enemy.getCell();
-                            Cell nextCell;
-
-                            Directions direction = Directions.randomDirection();
-                            int dx = direction.getDx();
-                            int dy = direction.getDy();
-
-                            nextCell = enemyCell.getNeighbor(dx, dy);
-
-                            while (!enemy.isMovePossible(nextCell)) {
-                                direction = Directions.randomDirection();
-                                dx = direction.getDx();
-                                dy = direction.getDy();
-
-                                nextCell = enemyCell.getNeighbor(dx, dy);
-                            }
-
-                            enemy.move(dx, dy);
-
-                        });
-                        thread.start();
-                    }
-
-                    refresh();
-                }
-                return null;
-            }
-        };
-
-        new Thread(moveEnemies).start();
         scene.getRoot().requestFocus();
+        new Thread(refreshScene).start();
+        new Thread(controlEnemies).start();
     }
+
+    private Task<Void> refreshScene = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            while (isGameRunning) {
+                int RENDER_TIME = 100;
+                Thread.sleep(RENDER_TIME);
+                refresh();
+            }
+            return null;
+        }
+    };
+
+    private Task<Void> controlEnemies = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            while (isGameRunning) {
+                int TURN_DURATION = 1000;
+                Thread.sleep(TURN_DURATION);
+                map.makeEnemiesTurn();
+            }
+            return null;
+        }
+    };
 
     private void onPickUpButtonPressed(ActionEvent actionEvent) {
         int playerX = map.getPlayer().getCell().getX();
@@ -164,88 +138,15 @@ public class Main extends Application {
             pickUpButton.setStyle("-fx-background-color: red;-fx-text-fill: white");
         }
     }
-    private void changeMap(String filePath){
-        //copy current player to new map
-        this.player = map.getPlayer();
-        items = player.getItems();
-        int experience = this.player.getCurrentExperience();
-        int level = this.player.getCurrentLevel();
-        int maxHealth = this.player.getMaxHealth();
-        int currentHealth = player.getHealth();
-        this.map = MapLoader.loadMap(filePath);
-        this.map.getPlayer().setCurrentExperience(experience);
-        this.map.getPlayer().setMaxHealth(maxHealth);
-        this.map.getPlayer().setCurrentLevel(level);
-        this.map.getPlayer().setHealth(currentHealth);
-        this.map.getPlayer().setItems(items);
+
+    public void setMap(GameMap map) {
+        this.map = map;
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         scene.getRoot().requestFocus();
-        if (map.getPlayer() != null) {
-            Player player = map.getPlayer();
-            Cell playerCell = player.getCell();
-            Cell nextCell;
-            Actor enemy;
-            int dx = 0;
-            int dy = 0;
-
-
-
-            //Directions direction = Directions.valueOf(directionKey);
-
-//            System.out.println(Directions.getValuesAsString().contains(directionKey));
-
-
-
-            switch (keyEvent.getCode()) {
-                case UP:
-                    dx = 0;
-                    dy = -1;
-                    break;
-                case DOWN:
-                    dx = 0;
-                    dy = 1;
-                    break;
-                case LEFT:
-                    dx = -1;
-                    dy = 0;
-                    break;
-                case RIGHT:
-                    dx = 1;
-                    dy = 0;
-                    break;
-                default:
-                    break;
-            }
-            nextCell = playerCell.getNeighbor(dx, dy);
-            player.tryToOpenTheDoorIfThereIsAny(nextCell, player);
-//            if (nextCell.getType().equals(CellType.EXIT)){
-//                changeMap(map.getWinMap());
-//            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
-//                map = MapLoader.loadMap(map.getNextMap());
-//            }
-            changeButtonColorIfThereIsAnItemInCell(nextCell);
-
-            if (player.isMovePossible(nextCell)) {
-                player.move(dx, dy);
-            } else if (player.isEnemyOnTheNextCell(nextCell)) {
-                enemy = nextCell.getActor();
-                enemy.receiveDamage(player.getDamage());
-                if (enemy.getHealth() < 0) {
-                    enemy.death();
-                    player.receiveExperience((Killable) enemy);
-                    map.removeEnemyFromList(enemy);
-                } else {
-                    player.receiveDamage(enemy.getDamage());
-                    if (player.getHealth() <= 0) {
-                        refresh();
-                        this.map = MapLoader.loadMap(map.getGameOverMap());
-                    }
-                }
-            }
-            refresh();
-        }
+        Player player = map.getPlayer();
+        player.makeAction(keyEvent, this);
     }
 
     private void refresh() {

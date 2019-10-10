@@ -1,5 +1,6 @@
 package com.codecool.quest.logic.actors;
 
+import com.codecool.quest.Main;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Doors.Door;
@@ -8,7 +9,6 @@ import com.codecool.quest.logic.GameMap;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.items.Item;
 import com.codecool.quest.logic.items.Key;
-import com.codecool.quest.newMain;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -127,7 +127,7 @@ public class Player extends Actor {
     }
 
 
-    public void makeAction(KeyEvent keyEvent, newMain main) {
+    public void makeAction(KeyEvent keyEvent, Main main) {
         GameMap map = main.map;
         Cell playerCell = getCell();
         Cell nextCell;
