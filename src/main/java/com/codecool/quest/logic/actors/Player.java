@@ -4,7 +4,7 @@ import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Doors.Door;
 import com.codecool.quest.logic.GameMap;
-import com.codecool.quest.logic.MapLoader;
+//import com.codecool.quest.logic.MapLoader;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.items.Item;
 import com.codecool.quest.logic.items.Key;
@@ -173,7 +173,7 @@ public class Player extends Actor {
             } else {
                 receiveDamage(enemy.getDamage());
                 if (getHealth() <= 0) {
-                    map = MapLoader.loadMap(map.getGameOverMap());
+//                    map = MapLoader.loadMap(map.getGameOverMap());
                 }
             }
         }
