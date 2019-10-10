@@ -1,23 +1,13 @@
 package com.codecool.quest;
 
-import com.codecool.quest.logic.Cell;
-import com.codecool.quest.logic.Directions;
-import com.codecool.quest.logic.CellType;
-import com.codecool.quest.logic.Doors.Door;
-import com.codecool.quest.logic.GameMap;
-import com.codecool.quest.logic.MapLoader;
+import com.codecool.quest.logic.*;
 import com.codecool.quest.logic.actors.Actor;
 import com.codecool.quest.logic.actors.Killable;
 import com.codecool.quest.logic.actors.Player;
-import com.codecool.quest.logic.actors.Skeleton;
 import com.codecool.quest.logic.items.Item;
-import com.codecool.quest.logic.items.Key;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -27,20 +17,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class Main extends Application {
-    private GameMap map = MapLoader.loadMap("/map.txt");
+    private GameMap map = MapLoader.loadMap("/start_game.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -53,8 +42,9 @@ public class Main extends Application {
     ProgressBar experience = new ProgressBar(0);
     Scene scene;
     Player player;
+    Stage primaryStage;
     ObservableList<String> items;
-    ListView<String> lista = new ListView<String >();
+    ListView<String> lista = new ListView<String>();
 //    ImageView imageView = new ImageView();
 
 
@@ -64,6 +54,81 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        String whichScene = " ";
+        this.primaryStage = primaryStage;
+        setScene(whichScene);
+        setPrimaryScene(this.primaryStage, whichScene);
+    }
+
+    private void setPrimaryScene(Stage primaryStage, String whichScene){
+        primaryStage.setScene(scene);
+        refresh();
+        primaryStage.setTitle("Codecool Quest");
+        primaryStage.show();
+
+        if (whichScene.equals("gameScene")) {
+            scene.setOnKeyPressed(this::onKeyPressed);
+
+            Task<Void> moveEnemies = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Player player = map.getPlayer();
+                    while (player.getHealth() > 0) {
+                        Thread.sleep(2000);
+
+                        LinkedList<Actor> enemies = map.getEnemies();
+
+                        for (Actor enemy : enemies) {
+
+                            Thread thread = new Thread(() -> {
+                                Cell enemyCell = enemy.getCell();
+                                Cell nextCell;
+
+                                Directions direction = Directions.randomDirection();
+                                int dx = direction.getDx();
+                                int dy = direction.getDy();
+
+                                nextCell = enemyCell.getNeighbor(dx, dy);
+
+                                while (!enemy.isMovePossible(nextCell)) {
+                                    direction = Directions.randomDirection();
+                                    dx = direction.getDx();
+                                    dy = direction.getDy();
+
+                                    nextCell = enemyCell.getNeighbor(dx, dy);
+                                }
+
+                                enemy.move(dx, dy);
+
+                            });
+                            thread.start();
+                        }
+
+                        refresh();
+                    }
+                    return null;
+                }
+            };
+            new Thread(moveEnemies).start();
+            scene.getRoot().requestFocus();
+        }else {
+            //TODO: Create button and read application again
+            scene.setOnKeyPressed(this::onSpacePressed);
+        }
+    }
+
+    private void onSpacePressed(KeyEvent keyEvent){
+        scene.getRoot().requestFocus();
+        if (keyEvent.getCode() == KeyCode.SPACE) {
+            this.map = MapLoader.loadMap("/map.txt");
+            setScene("gameScene");
+            setPrimaryScene(this.primaryStage, "gameScene");
+            refresh();
+        }
+    }
+
+
+    private void setScene(String whichScene){
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
@@ -83,67 +148,14 @@ public class Main extends Application {
         ui.add(pickUpButton, 0, 8);
         ui.add(lista, 0, 9);
 
-
-
-
         BorderPane borderPane = new BorderPane();
 
         borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
+        if (whichScene.equals("gameScene")){
+            borderPane.setRight(ui);
+        }
 
-        Scene scene = new Scene(borderPane);
-        this.scene = scene;
-        primaryStage.setScene(scene);
-        refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-
-        primaryStage.setTitle("Codecool Quest");
-        primaryStage.show();
-
-
-        Task<Void> moveEnemies = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Player player = map.getPlayer();
-                while (player.getHealth()>0) {
-                    Thread.sleep(2000);
-
-                    LinkedList<Actor> enemies = map.getEnemies();
-
-                    for (Actor enemy : enemies) {
-
-                        Thread thread = new Thread(() -> {
-                            Cell enemyCell = enemy.getCell();
-                            Cell nextCell;
-
-                            Directions direction = Directions.randomDirection();
-                            int dx = direction.getDx();
-                            int dy = direction.getDy();
-
-                            nextCell = enemyCell.getNeighbor(dx, dy);
-
-                            while (!enemy.isMovePossible(nextCell)) {
-                                direction = Directions.randomDirection();
-                                dx = direction.getDx();
-                                dy = direction.getDy();
-
-                                nextCell = enemyCell.getNeighbor(dx, dy);
-                            }
-
-                            enemy.move(dx, dy);
-
-                        });
-                        thread.start();
-                    }
-
-                    refresh();
-                }
-                return null;
-            }
-        };
-
-        new Thread(moveEnemies).start();
-        scene.getRoot().requestFocus();
+        this.scene = new Scene(borderPane);
     }
 
     private void onPickUpButtonPressed(ActionEvent actionEvent) {
@@ -159,14 +171,16 @@ public class Main extends Application {
         }
         scene.getRoot().requestFocus();
     }
-    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell){
-        if (playerCell.getItem() != null){
+
+    private void changeButtonColorIfThereIsAnItemInCell(Cell playerCell) {
+        if (playerCell.getItem() != null) {
             pickUpButton.setStyle("-fx-background-color: green;-fx-text-fill: white");
-        }else {
+        } else {
             pickUpButton.setStyle("-fx-background-color: red;-fx-text-fill: white");
         }
     }
-    private void changeMap(String filePath){
+
+    private void changeMap(String filePath) {
         //copy current player to new map
         this.player = map.getPlayer();
         items = player.getItems();
@@ -213,9 +227,9 @@ public class Main extends Application {
             }
             nextCell = playerCell.getNeighbor(dx, dy);
             player.tryToOpenTheDoorIfThereIsAny(nextCell, player);
-            if (nextCell.getType().equals(CellType.EXIT)){
+            if (nextCell.getType().equals(CellType.EXIT)) {
                 changeMap("/map1.txt");
-            }else if (nextCell.getType().equals(CellType.EXIT_WIN)){
+            } else if (nextCell.getType().equals(CellType.EXIT_WIN)) {
                 this.map = MapLoader.loadMap("/end_game_win.txt");
             }
             changeButtonColorIfThereIsAnItemInCell(nextCell);
@@ -249,14 +263,14 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                }else if (cell.getItem() != null){
+                } else if (cell.getItem() != null) {
                     Tiles.drawTile(context, cell.getItem(), x, y);
-                }else {
+                } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
-        if (map.getPlayer() != null){
+        if (map.getPlayer() != null) {
             health.setProgress(map.getPlayer().healthBar());
             experience.setProgress(map.getPlayer().experienceBar());
             attackLabel.setText("Attack: " + map.getPlayer().getDamage());
