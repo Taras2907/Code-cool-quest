@@ -26,7 +26,7 @@ public class Player extends Actor {
     private Map<String, Item> inventory = new HashMap<>();
     private final int maxPlayerLevel = 5;
     private int currentLevel = 1;
-    private int maxHealth = 40;
+    private int maxHealth = 200;
     private int currentExperience = 0;
     private int experienceForNewLevel = 1000;
 
